@@ -223,7 +223,7 @@ wire [15:0] joy_0 = |status[31:30] ? {
 	joydb9md_1[7], // _start_1	-> 8 * Start/reset
 	joydb9md_1[5], // Paddle1(y)-> 6 * C
 	joydb9md_1[4], // Paddle1(x)-> 5 * B
-	joydb9md_1[6], // btn_fire	-> 4 * A
+	joydb9md_1[6] | joydb9md_1[4], // btn_fire	-> 4 * A or B
 	joydb9md_1[3], // btn_up	-> 3 * U
 	joydb9md_1[2], // btn_down	-> 2 * D
 	joydb9md_1[1], // btn_left	-> 1 * L
@@ -235,7 +235,7 @@ wire [15:0] joy_1 =  status[31]    ? {
 	joydb9md_2[7], // _start_1	-> 8 * Start/reset
 	joydb9md_2[5], // Paddle1(y)-> 6 * C
 	joydb9md_2[4], // Paddle1(x)-> 5 * B
-	joydb9md_2[6], // btn_fire	-> 4 * A
+	joydb9md_2[6] | joydb9md_2[4], // btn_fire	-> 4 * A or B
 	joydb9md_2[3], // btn_up	-> 3 * U
 	joydb9md_2[2], // btn_down	-> 2 * D
 	joydb9md_2[1], // btn_left	-> 1 * L
