@@ -148,6 +148,7 @@ architecture arch of A2601top is
 	constant BANKFA: bss_type := "1000";
 	constant BANKCV: bss_type := "1001";
 	constant BANK2K: bss_type := "1010";
+	constant BANKUA: bss_type := "1011";
 
 	signal bss:  bss_type := BANK00; 	--bank switching method
 	 
@@ -225,15 +226,10 @@ rst <= reset when rising_edge(clk);
 
 process(clk) begin
 	if rising_edge(clk) then
-		if p_type /= "10" then
-			paddle_ena12 <= p_type(0);
-			paddle_ena34 <= p_type(0);
-		else
-			if p1_f = '0' then paddle_ena12 <= '0'; end if;
-			if p_1 = '0' or p_2 = '0' then paddle_ena12 <= '1'; end if;
-			if p2_f = '0' then paddle_ena34 <= '0'; end if;
-			if p_3 = '0' or p_4 = '0' then paddle_ena34 <= '1'; end if;
-		end if;
+		if p1_f = '0' then paddle_ena12 <= '0'; end if;
+		if p_1 = '0' or p_2 = '0' then paddle_ena12 <= '1'; end if;
+		if p2_f = '0' then paddle_ena34 <= '0'; end if;
+		if p_3 = '0' or p_4 = '0' then paddle_ena34 <= '1'; end if;
 	end if;
 end process;
 
@@ -487,6 +483,12 @@ begin
 				when BANK3F =>
 					if (cpu_a = "0" & X"03F") then
 						bank(1 downto 0) <= cpu_do(1 downto 0);
+					end if;
+				when BANKUA =>
+					if (cpu_a = "0" & X"220") then
+						bank <= "0000";
+					elsif (cpu_a = "0" & X"240") then
+						bank <= "0001";
 					end if;
 				when others =>
 					null;

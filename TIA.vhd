@@ -732,8 +732,8 @@ begin
     hh0 <= '1' when (h_cntr_out = "00") else '0';
     hh1_edge <= '1' when (h_cntr_out = "10") else '0';
 
-    aud0: work.audio port map(clk, au_cnt, a0_freq, a0_ctrl, au0);
-    aud1: work.audio port map(clk, au_cnt, a1_freq, a1_ctrl, au1);
+    aud0: work.audio_argh2600 port map(clk, au_cnt, a0_freq, a0_ctrl, au0);
+    aud1: work.audio_argh2600 port map(clk, au_cnt, a1_freq, a1_ctrl, au1);
 
     av0 <= a0_vol;
     av1 <= a1_vol;
@@ -862,7 +862,6 @@ begin
     begin
         if (r = '1') and (cs = '1') then
             do(5 downto 0) <= "000000";
-
             case a(3 downto 0) is
                 when A_CXM0P =>
                     do(7 downto 6) <= cx(1 downto 0);
