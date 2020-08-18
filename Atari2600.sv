@@ -64,9 +64,10 @@ module emu
 	// b[0]: osd button
 	output  [1:0] BUTTONS,
 
+	input         CLK_AUDIO, // 24.576 MHz
 	output [15:0] AUDIO_L,
 	output [15:0] AUDIO_R,
-	output        AUDIO_S, // 1 - signed audio samples, 0 - unsigned
+	output        AUDIO_S,   // 1 - signed audio samples, 0 - unsigned
 	output  [1:0] AUDIO_MIX, // 0 - no mix, 1 - 25%, 2 - 50%, 3 - 100% (mono)
 
 	//ADC
@@ -323,7 +324,7 @@ wire [23:0] ext = (ioctl_file_ext[23:16] == ".") ? ioctl_file_ext[23:0] : ioctl_
 reg [3:0] force_bs = 0;
 reg sc = 0;
 always @(posedge clk_sys) begin
-	reg       old_download;
+	reg old_download;
 
 	old_download <= ioctl_download;
 	if(~old_download & ioctl_download) begin
@@ -357,10 +358,11 @@ A2601top A2601top
 (
 	.reset(reset),
 	.clk(clk_cpu),
+	.vid_clk(clk_sys),
 
 	.audio(audio),
 
-	//.O_VSYNC(VSync),
+	.O_VSYNC(vs),
 	.O_HSYNC(hs),
 	.O_HBLANK(HBlank),
 	.O_VBLANK(VBlank),
@@ -406,11 +408,12 @@ A2601top A2601top
 );
 
 wire [7:0] R,G,B;
-wire hs;
+wire hs, vs;
 reg  HSync;
 wire HBlank, VBlank;
-reg VSync;
+reg  vs_g, vs_o, vs_gen;
 
+wire VSync = vs_gen ? vs_g : vs_o;
 /*
 always @(posedge CLK_VIDEO) begin
 	reg       old_vbl;
@@ -438,8 +441,11 @@ always @(posedge clk_sys) begin
 	HSync <= hs;
 	if(~HSync & hs) begin
 		old_vbl <= VBlank;
-		{VSync,vbl} <= {vbl,1'b0};
-		if(~old_vbl & VBlank) vbl <= 8'b00111100;
+		vs_o <= vs;
+
+		{vs_g,vbl} <= {vbl,1'b0};
+		if(~old_vbl & VBlank) vbl <= 8'b00111000;
+		if (~vs_o & vs) vs_gen <= ~VBlank;
 	end
 end
 
